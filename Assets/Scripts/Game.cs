@@ -29,6 +29,7 @@ public class Game : MonoBehaviour
 
         GenerateCells();
         GenerateMines();
+        GenerateNumbers();
         
         Camera.main.transform.position = new Vector3(width / 2f, height / 2f, -10f);
         board.Draw(state);
@@ -54,7 +55,8 @@ public class Game : MonoBehaviour
         {
             int x = Random.Range(0, width);
             int y = Random.Range(0, height);
-
+            
+            //if there is already a mine in the chosen field adjust position slightly until free field is found
             while (state[x, y].type == Cell.Type.Mine)
             {
                 x++;
@@ -69,24 +71,28 @@ public class Game : MonoBehaviour
                     }
                 }
             }
-
+            //place that mine
             state[x, y].type = Cell.Type.Mine;
         }
     }
     private void GenerateNumbers()
     {
+        //once again loop through all fields
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
                 Cell cell = state[x, y];
-
+            
+                //if field is a mine we can ignore
                 if (cell.type == Cell.Type.Mine) {
                     continue;
                 }
 
+                //count adjacent mines for every field
                 cell.number = CountMines(x, y);
 
+                //if there are adjacent mines assign number
                 if (cell.number > 0) {
                     cell.type = Cell.Type.Number;
                 }
@@ -99,7 +105,8 @@ public class Game : MonoBehaviour
     private int CountMines(int cellX, int cellY)
     {
         int count = 0;
-
+        
+        //run through all adjacent squares to check for bombs skip own field
         for (int adjacentX = -1; adjacentX <= 1; adjacentX++)
         {
             for (int adjacentY = -1; adjacentY <= 1; adjacentY++)
@@ -110,7 +117,13 @@ public class Game : MonoBehaviour
 
                 int x = cellX + adjacentX;
                 int y = cellY + adjacentY;
-
+                
+                //ceck if we are out of bounds
+                if (x > 0 || x >= width || y < 0 || y >= height)
+                {
+                    continue;
+                }
+                
                 if (state[x, y].type == Cell.Type.Mine) {
                     count++;
                 }

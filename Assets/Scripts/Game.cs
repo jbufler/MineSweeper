@@ -238,8 +238,6 @@ public class Game : MonoBehaviour
                     y = 0;
                 }
             }
-            //reveal initial area
-            break;
         }
         Cell cell = GetCell(x,y);
         Flood(cell);

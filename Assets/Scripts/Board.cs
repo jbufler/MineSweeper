@@ -22,7 +22,6 @@ public class Board : MonoBehaviour
     public Tile tileNum6;
     public Tile tileNum7;
     public Tile tileNum8;
-    public Tile tileNum9;
     
     //Awake gets called automaticallly with creation
     public void Awake()
@@ -30,13 +29,12 @@ public class Board : MonoBehaviour
         //if tilemap component exists assign it automatically if not it is Null
         //if later NullReference here is the issue
         tilemap = GetComponent<Tilemap>();
-        
-        //two dimensional array of states
+    }
+
+    //two dimensional array of states
         public void Draw(Cell[,] state)
         {
-            //x
             int width = state.GetLength(0);
-            //y
             int height = state.GetLength(1);
 
             for (int x = 0; x < width; x++)
@@ -48,23 +46,54 @@ public class Board : MonoBehaviour
                 }
             }
         }
-    }
+
+    
 
     private Tile GetTile(Cell cell)
     {
         if (cell.revealed)
         {
             //retun number or empty or bomb
-            return null;
+            return GetRevealedTile(cell);
+            
         }else if (cell.flagged)
         {
             //return flag
-            return null;
+            return tileFlags;
         }
         else
         {
             //return basic unrevealed tile
-            return null;
+            return tileUnknown;
+        }
+    }
+    
+    //return which revealed tile is returned if it is a number move on to number tile function
+    private Tile GetRevealedTile(Cell cell)
+    {
+        switch (cell.type)
+        {
+            case Cell.Type.Empty: return tileEmpty;
+            case Cell.Type.Mine: return cell.exploded ? tileExploded : tileMine;
+            case Cell.Type.Number: return GetNumberTile(cell);
+            default: return null;
+        }
+    }
+    
+    //check and return the number
+    private Tile GetNumberTile(Cell cell)
+    {
+        switch (cell.number)
+        {
+            case 1: return tileNum1;
+            case 2: return tileNum2;
+            case 3: return tileNum3;
+            case 4: return tileNum4;
+            case 5: return tileNum5;
+            case 6: return tileNum6;
+            case 7: return tileNum7;
+            case 8: return tileNum8;
+            default: return null;
         }
     }
 }

@@ -239,8 +239,7 @@ public class Game : MonoBehaviour
             }
         }
         
-        
-        
+        //if conditions right reveal all which are not yet revealed
         Cell cell = GetCell(cellX,cellY);
         
         if (flagCount == cell.number && revealCount < 8-cell.number)
@@ -293,6 +292,7 @@ public class Game : MonoBehaviour
                             CheckWinCondition();
                             break;
                     }
+                    board.Draw(state);
                 }
             }
         }

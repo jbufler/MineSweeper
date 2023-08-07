@@ -32,8 +32,11 @@ public class Game : MonoBehaviour
         GenerateMines();
         GenerateNumbers();
         
+        InitialReveal();
+        
         Camera.main.transform.position = new Vector3(width / 2f, height / 2f, -10f);
         board.Draw(state);
+
     }
 
     private void GenerateCells()
@@ -215,6 +218,31 @@ public class Game : MonoBehaviour
             Flood(GetCell(cell.position.x, cell.position.y - 1));
             Flood(GetCell(cell.position.x, cell.position.y + 1));
         }
+    }
+
+    private void InitialReveal()
+    {
+        int x = Random.Range(0, width);
+        int y = Random.Range(0, height);
+            
+        //if there is already a mine in the chosen field adjust position slightly until free field is found
+        while (state[x, y].type != Cell.Type.Empty)
+        {
+            x++;
+            if (x >= width)
+            {
+                x = 0;
+                y++;
+
+                if (y >= height) {
+                    y = 0;
+                }
+            }
+            //reveal initial area
+            break;
+        }
+        Cell cell = GetCell(x,y);
+        Flood(cell);
     }
 
     private void Explode(Cell cell)

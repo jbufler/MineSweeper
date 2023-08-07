@@ -173,11 +173,16 @@ public class Game : MonoBehaviour
         Vector3Int cellPosition = board.tilemap.WorldToCell(worldPosition);
         Cell cell = GetCell(cellPosition.x, cellPosition.y);
 
+        if (cell.revealed && cell.type == Cell.Type.Number)
+        {
+            numberGamble(cellPosition.x,cellPosition.y);
+        }
+        
         // Cannot reveal if already revealed or while flagged
         if (cell.type == Cell.Type.Invalid || cell.revealed || cell.flagged) {
             return;
         }
-
+        
         switch (cell.type)
         {
             case Cell.Type.Mine:
@@ -199,6 +204,100 @@ public class Game : MonoBehaviour
         board.Draw(state);
     }
 
+    
+    //function for revealing all adjacent squares if suffienctly enough are flagged in area
+    private void numberGamble(int cellX, int cellY)
+    {
+        int flagCount = 0;
+        int revealCount = 0;
+        
+        for (int adjacentX = -1; adjacentX <= 1; adjacentX++)
+        {
+            for (int adjacentY = -1; adjacentY <= 1; adjacentY++)
+            {
+                if (adjacentX == 0 && adjacentY == 0) {
+                    continue;
+                }
+
+                int x = cellX + adjacentX;
+                int y = cellY + adjacentY;
+                
+                //ceck if we are out of bounds
+                if (x < 0 || x >= width || y < 0 || y >= height)
+                {
+                    revealCount++;
+                    continue;
+                }
+                
+                Cell cellTemp = GetCell(x,y);
+                if (cellTemp.flagged) {
+                    flagCount++;
+                }
+                if (cellTemp.revealed) {
+                    revealCount++;
+                }
+            }
+        }
+        
+        
+        
+        Cell cell = GetCell(cellX,cellY);
+        
+        if (flagCount == cell.number && revealCount < 8-cell.number)
+        {
+            for (int adjacentX = -1; adjacentX <= 1; adjacentX++)
+            {
+                for (int adjacentY = -1; adjacentY <= 1; adjacentY++)
+                {
+                    if (adjacentX == 0 && adjacentY == 0)
+                    {
+                        continue;
+                    }
+
+                    int x = cellX + adjacentX;
+                    int y = cellY + adjacentY;
+
+                    //ceck if we are out of bounds 
+                    if (x < 0 || x >= width || y < 0 || y >= height)
+                    {
+                        continue;
+                    }
+
+                    Cell cellTemp = GetCell(x, y);
+
+                    if (cellTemp.flagged)
+                    {
+                        Debug.Log("Flag detected");
+                        continue;
+                    }
+                    //iISSUE IS HERE WE DONT ACTAULLY REVAL THEM 
+                    //correctly detects them doesnt correctly reveal
+                    switch (cellTemp.type)
+                    {
+                        case Cell.Type.Mine:
+                            Explode(cellTemp);
+                            break;
+
+                        case Cell.Type.Empty:
+                            
+                            Debug.Log("Empty detected");
+                            Flood(cellTemp);
+                            CheckWinCondition();
+                            break;
+
+                        default:
+                            
+                            Debug.Log("default detected");
+                            cellTemp.revealed = true;
+                            state[x, y] = cellTemp;
+                            CheckWinCondition();
+                            break;
+                    }
+                }
+            }
+        }
+    }
+    
     //if we press in an empty cell we want to reveal all adjacent empty cells
     private void Flood(Cell cell)
     {

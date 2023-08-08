@@ -406,7 +406,8 @@ public class Game : MonoBehaviour
     {
         if (IsValid(x, y)) {
             return state[x, y];
-        } else {
+        } 
+        else {
             return new Cell();
         }
     }

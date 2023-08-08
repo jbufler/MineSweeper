@@ -10,9 +10,9 @@ public class Menu : MonoBehaviour
     public Slider widthSlider;
     public Slider heightSlider;
     public Slider minesSlider;
-    private int tempWidth = 16;
-    private int tempHeight = 16;
-    private int tempMines = 5;
+    public int tempWidth = 16;
+    public int tempHeight = 16;
+    public int tempMines = 5;
 
     public void Start()
     {
@@ -21,17 +21,17 @@ public class Menu : MonoBehaviour
         minesSlider.onValueChanged.AddListener(UpdateTempMines);
     }
 
-    private void UpdateTempWidth(float newValue)
+    public void UpdateTempWidth(float newValue)
     {
         tempWidth = (int) newValue;
     }
     
-    private void UpdateTempHeight(float newValue)
+    public void UpdateTempHeight(float newValue)
     {
         tempHeight = (int) newValue;
     }
     
-    private void UpdateTempMines(float newValue)
+    public void UpdateTempMines(float newValue)
     {
         tempMines = (int) newValue;
     }
@@ -50,7 +50,7 @@ public class Menu : MonoBehaviour
     {
         game.height = tempHeight;
         game.width = tempWidth;
-        game.mineCount = tempMines;
+        game.mineCount = tempMines;                                                  
         game.NewGame();
     }
 }

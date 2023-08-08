@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
-public class Game : MonoBehaviour
-{
-    [SerializeField] private int width;
-    [SerializeField] private int height;
-    [SerializeField] private int mineCount;
+public class Game : MonoBehaviour 
+{ 
+    public int width = 16;
+    public int height = 16;
+    public int mineCount = 32;
 
     private Board board;
     private Cell[,] state;
@@ -21,26 +22,11 @@ public class Game : MonoBehaviour
 
     private void Start()
     {
-        NewGame();
+        //NewGame();
     }
-    
-    
-    //width height minecount setting for other functions to overwrite
-    public void setStats(int widt, int haight, int mines)
-    {
-        this.width = widt;
-        this.height = haight;
-        this.mineCount = mines;
-    }
-    
+
     public void NewGame()
     {
-        if (width == null || height == null || mineCount == null)
-        {
-            this.width = 28;
-            this.height = 19;
-            this.mineCount = 32;
-        } 
         state = new Cell[width, height];
 
         GenerateCells();
@@ -154,7 +140,7 @@ public class Game : MonoBehaviour
   private void Update()
     {
         if (Input.GetKeyDown(KeyCode.R)) {
-            NewGame();
+            SceneManager.LoadScene(0);
         }
         else if (!gameover)
         {
@@ -291,15 +277,11 @@ public class Game : MonoBehaviour
                             break;
 
                         case Cell.Type.Empty:
-                            
-                            Debug.Log("Empty detected");
                             Flood(cellTemp);
                             CheckWinCondition();
                             break;
 
                         default:
-                            
-                            Debug.Log("default detected");
                             cellTemp.revealed = true;
                             state[x, y] = cellTemp;
                             CheckWinCondition();

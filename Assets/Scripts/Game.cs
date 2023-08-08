@@ -6,9 +6,9 @@ using Random = UnityEngine.Random;
 
 public class Game : MonoBehaviour
 {
-    [SerializeField] private int width = 16;
-    [SerializeField] private int height = 16;
-    [SerializeField] private int mineCount = 32;
+    [SerializeField] private int width;
+    [SerializeField] private int height;
+    [SerializeField] private int mineCount;
 
     private Board board;
     private Cell[,] state;
@@ -23,9 +23,24 @@ public class Game : MonoBehaviour
     {
         NewGame();
     }
-
-    private void NewGame()
+    
+    
+    //width height minecount setting for other functions to overwrite
+    public void setStats(int widt, int haight, int mines)
     {
+        this.width = widt;
+        this.height = haight;
+        this.mineCount = mines;
+    }
+    
+    public void NewGame()
+    {
+        if (width == null || height == null || mineCount == null)
+        {
+            this.width = 28;
+            this.height = 19;
+            this.mineCount = 32;
+        } 
         state = new Cell[width, height];
 
         GenerateCells();
@@ -266,11 +281,9 @@ public class Game : MonoBehaviour
 
                     if (cellTemp.flagged)
                     {
-                        Debug.Log("Flag detected");
                         continue;
                     }
-                    //iISSUE IS HERE WE DONT ACTAULLY REVAL THEM 
-                    //correctly detects them doesnt correctly reveal
+                    
                     switch (cellTemp.type)
                     {
                         case Cell.Type.Mine:
@@ -316,6 +329,11 @@ public class Game : MonoBehaviour
             Flood(GetCell(cell.position.x + 1, cell.position.y));
             Flood(GetCell(cell.position.x, cell.position.y - 1));
             Flood(GetCell(cell.position.x, cell.position.y + 1));
+            
+            Flood(GetCell(cell.position.x - 1, cell.position.y -1));
+            Flood(GetCell(cell.position.x + 1, cell.position.y +1));
+            Flood(GetCell(cell.position.x + 1, cell.position.y - 1));
+            Flood(GetCell(cell.position.x - 1, cell.position.y + 1));
         }
     }
 

@@ -15,9 +15,11 @@ public class Game : MonoBehaviour
     private Cell[,] state;
     private bool gameover;
 
+    [SerializeField] private GameObject winCanvas;
     private void Awake()
     {
         board = GetComponentInChildren<Board>();
+        winCanvas.gameObject.SetActive(false); 
     }
 
     private void Start()
@@ -366,6 +368,7 @@ public class Game : MonoBehaviour
                 }
             }
         }
+        StartCoroutine(ExampleCoroutine());
     }
 
     private void CheckWinCondition()
@@ -384,6 +387,7 @@ public class Game : MonoBehaviour
         }
 
         Debug.Log("Winner!");
+        
         gameover = true;
 
         // Flag all the mines
@@ -400,8 +404,19 @@ public class Game : MonoBehaviour
                 }
             }
         }
+        winCanvas.gameObject.SetActive(true);
+        StartCoroutine(ExampleCoroutine());
+        
     }
+    IEnumerator ExampleCoroutine()
+    {
+        //Print the time of when the function is first called.
 
+        //yield on a new YieldInstruction that waits for 5 seconds.
+        yield return new WaitForSeconds(5);
+
+        SceneManager.LoadScene(0);
+    }
     private Cell GetCell(int x, int y)
     {
         if (IsValid(x, y)) {
